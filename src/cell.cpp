@@ -78,7 +78,15 @@ const char *cell::chars() const {
 }
 
 size_t cell::size() const {
-    return _bytes.size();
+    if( _is_binary || _bytes.empty() )
+    {
+        return _bytes.size();
+    }
+    else
+    {
+        // Allow for the \0 terminator
+        return _bytes.size() - 1;
+    }
 }
 
 
@@ -172,6 +180,7 @@ void cell::set_string(const string &string) {
     const uint8_t * const base = reinterpret_cast<const uint8_t *>(&string[0]);
     const size_t size = string.size();
     _bytes.assign(base, base + size);
+    _bytes.push_back(0);
     _is_binary = false;
 }
 
